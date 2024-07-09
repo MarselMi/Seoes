@@ -371,24 +371,46 @@ async def get_urls(request: Request, data_request: dict):
     end_date = datetime.strptime(data_request["end_date"], date_format_2)
     if data_request["sort_result"]:
         if data_request["search_text"] == "":
-            urls = await _get_urls_with_pagination_sort(data_request["start"], data_request["length"], start_date,
-                                                        end_date, data_request["sort_desc"], async_session)
+            urls = await _get_urls_with_pagination_sort(
+                data_request["start"],
+                data_request["length"],
+                start_date,
+                end_date,
+                data_request["sort_desc"],
+                async_session
+            )
         else:
-            urls = await _get_urls_with_pagination_and_like_sort(data_request["start"], data_request["length"],
-                                                                 start_date, end_date, data_request["search_text"],
-                                                                 data_request["sort_desc"],
-                                                                 async_session)
+            urls = await _get_urls_with_pagination_and_like_sort(
+                data_request["start"],
+                data_request["length"],
+                start_date,
+                end_date,
+                data_request["search_text"],
+                data_request["sort_desc"],
+                async_session
+            )
     else:
         if data_request["search_text"] == "":
-            urls = await _get_urls_with_pagination(data_request["start"], data_request["length"], start_date, end_date,
-                                                   async_session)
+            urls = await _get_urls_with_pagination(
+                data_request["start"],
+                data_request["length"],
+                start_date,
+                end_date,
+                async_session
+            )
         else:
-            urls = await _get_urls_with_pagination_and_like(data_request["start"], data_request["length"], start_date,
-                                                            end_date, data_request["search_text"],
-                                                            async_session)
+            urls = await _get_urls_with_pagination_and_like(
+                data_request["start"],
+                data_request["length"],
+                start_date,
+                end_date,
+                data_request["search_text"],
+                async_session
+            )
     try:
-        grouped_data = [(key, sorted(list(group)[:14], key=lambda x: x[0])) for key, group in
-                        groupby(urls, key=lambda x: x[-1])]
+        grouped_data = [
+            (key, sorted(list(group)[:14], key=lambda x: x[0])) for key, group in groupby(urls, key=lambda x: x[-1])
+        ]
     except TypeError as e:
         if urls is None:
             pass
@@ -397,8 +419,9 @@ async def get_urls(request: Request, data_request: dict):
         return JSONResponse({"data": []})
     data = []
     for el in grouped_data:
-        res = {"url":
-                   f"<div style='width:355px; height: 55px; overflow: auto; white-space: nowrap;'><span>{el[0]}</span></div>"}
+        res = {
+            "url": f"<div style='width:355px; height: 55px; overflow: auto; white-space: nowrap;'><span>{el[0]}</span></div>"
+        }
         for k, stat in enumerate(el[1]):
             up = 0
             if k + 1 < len(el[1]):

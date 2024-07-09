@@ -35,15 +35,17 @@ async def add_data(data):
         }
         for el in query['statistics']:
             if date != el['date']:
-                metrics.append(Metrics(
-                    url=query_name,
-                    date=datetime.strptime(date, date_format),
-                    ctr=data_add['ctr'],
-                    position=data_add['position'],
-                    impression=data_add['impression'],
-                    demand=data_add['demand'],
-                    clicks=data_add['clicks']
-                ))
+                metrics.append(
+                    Metrics(
+                        url=query_name,
+                        date=datetime.strptime(date, date_format),
+                        ctr=data_add['ctr'],
+                        position=data_add['position'],
+                        impression=data_add['impression'],
+                        demand=data_add['demand'],
+                        clicks=data_add['clicks']
+                    )
+                )
                 date = el['date']
                 data_add = {
                     "date": date,
@@ -54,7 +56,8 @@ async def add_data(data):
                     "clicks": 0,
                 }
 
-            field = el["field"]
+            field: str = el["field"]
+            # data_add[field.lower()] = el["value"]
             if field == "IMPRESSIONS":
                 data_add["impression"] = el["value"]
             elif field == "CLICKS":
@@ -79,8 +82,14 @@ async def get_data_by_page(page):
         "filters": {}
     }
 
-    response = requests.post(URL, json=body, headers={'Authorization': f'OAuth {ACCESS_TOKEN}',
-                                                      "Content-Type": "application/json; charset=UTF-8"})
+    response = requests.post(
+        URL,
+        json=body,
+        headers={
+            'Authorization': f'OAuth {ACCESS_TOKEN}',
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    )
 
     print(response.text[:100])
     data = response.json()
@@ -98,8 +107,14 @@ async def get_all_data():
         "filters": {}
     }
 
-    response = requests.post(URL, json=body, headers={'Authorization': f'OAuth {ACCESS_TOKEN}',
-                                                      "Content-Type": "application/json; charset=UTF-8"})
+    response = requests.post(
+        URL,
+        json=body,
+        headers={
+            'Authorization': f'OAuth {ACCESS_TOKEN}',
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    )
 
     print(response.text[:100])
     data = response.json()
